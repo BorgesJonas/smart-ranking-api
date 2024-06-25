@@ -7,6 +7,7 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
+import { DeleteResult } from 'mongodb';
 import { CreatePlayerDto } from './dtos/create-player.dto';
 import { PlayersService } from './players.service';
 import { Player } from './interfaces/player.interface';
@@ -26,7 +27,7 @@ export class PlayersController {
   }
 
   @Delete(':id')
-  async deletePlayer(@Param('id') id: string): Promise<void> {
+  async deletePlayer(@Param('id') id: string): Promise<DeleteResult> {
     return await this.playersService.deletePlayer(id);
   }
 }
