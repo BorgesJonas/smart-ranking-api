@@ -6,6 +6,8 @@ import {
   Param,
   Post,
   Query,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import { DeleteResult } from 'mongodb';
 import { CreatePlayerDto } from './dtos/create-player.dto';
@@ -17,11 +19,12 @@ export class PlayersController {
   constructor(private readonly playersService: PlayersService) {}
 
   @Get()
-  async getPlayers(@Query('email') email: string): Promise<Player[] | Player> {
+  async getPlayers(@Query('email') email?: string): Promise<Player[] | Player> {
     return await this.playersService.getPlayers(email);
   }
 
   @Post()
+  @UsePipes(ValidationPipe)
   async createUpdatePlayer(@Body() playerDto: CreatePlayerDto): Promise<void> {
     await this.playersService.createUpdatePlayer(playerDto);
   }
