@@ -5,6 +5,7 @@ import {
   Get,
   Param,
   Post,
+  Put,
   Query,
   UsePipes,
   ValidationPipe,
@@ -19,18 +20,34 @@ export class PlayersController {
   constructor(private readonly playersService: PlayersService) {}
 
   @Get()
-  async getPlayers(@Query('email') email?: string): Promise<Player[] | Player> {
+  async getPlayers(@Query('email') email?: string): Promise<Player[]> {
     return await this.playersService.getPlayers(email);
+  }
+
+  @Get(':id')
+  async getPlayerById(@Param('id') id: string): Promise<Player> {
+    return await this.playersService.getPlayerById(id);
   }
 
   @Post()
   @UsePipes(ValidationPipe)
-  async createUpdatePlayer(@Body() playerDto: CreatePlayerDto): Promise<void> {
-    await this.playersService.createUpdatePlayer(playerDto);
+  async createUpdatePlayer(
+    @Body() playerDto: CreatePlayerDto,
+  ): Promise<Player> {
+    return await this.playersService.createPlayer(playerDto);
+  }
+
+  @Put(':id')
+  @UsePipes(ValidationPipe)
+  async updatePlayer(
+    @Param('id') id: string,
+    @Body() playerDto: CreatePlayerDto,
+  ): Promise<Player> {
+    return await this.playersService.updatePlayer(id, playerDto);
   }
 
   @Delete(':id')
-  async deletePlayer(@Param('id') id: string): Promise<DeleteResult> {
-    return await this.playersService.deletePlayer(id);
+  async deletePlayer(@Param('id') id: string): Promise<void> {
+    await this.playersService.deletePlayer(id);
   }
 }
