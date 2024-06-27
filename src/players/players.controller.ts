@@ -10,10 +10,10 @@ import {
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
-import { DeleteResult } from 'mongodb';
 import { CreatePlayerDto } from './dtos/create-player.dto';
 import { PlayersService } from './players.service';
 import { Player } from './interfaces/player.interface';
+import { UpdatePlayerDto } from './dtos/update.player.dto';
 
 @Controller('api/v1/players')
 export class PlayersController {
@@ -31,9 +31,7 @@ export class PlayersController {
 
   @Post()
   @UsePipes(ValidationPipe)
-  async createUpdatePlayer(
-    @Body() playerDto: CreatePlayerDto,
-  ): Promise<Player> {
+  async createUpdatePlayer(@Body() playerDto: CreatePlayerDto): Promise<void> {
     return await this.playersService.createPlayer(playerDto);
   }
 
@@ -41,8 +39,8 @@ export class PlayersController {
   @UsePipes(ValidationPipe)
   async updatePlayer(
     @Param('id') id: string,
-    @Body() playerDto: CreatePlayerDto,
-  ): Promise<Player> {
+    @Body() playerDto: UpdatePlayerDto,
+  ): Promise<void> {
     return await this.playersService.updatePlayer(id, playerDto);
   }
 

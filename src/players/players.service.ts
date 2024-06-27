@@ -8,6 +8,7 @@ import { CreatePlayerDto } from './dtos/create-player.dto';
 import { Player } from './interfaces/player.interface';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { UpdatePlayerDto } from './dtos/update.player.dto';
 
 @Injectable()
 export class PlayersService {
@@ -45,7 +46,7 @@ export class PlayersService {
     return player;
   }
 
-  async createPlayer(playerDto: CreatePlayerDto): Promise<Player> {
+  async createPlayer(playerDto: CreatePlayerDto): Promise<void> {
     this.logger.log(`Creating player: ${JSON.stringify(playerDto)}`);
 
     const { email } = playerDto;
@@ -57,10 +58,10 @@ export class PlayersService {
       );
     }
 
-    return await new this.playerModel(playerDto).save();
+    await new this.playerModel(playerDto).save();
   }
 
-  async updatePlayer(id: string, playerDto: CreatePlayerDto): Promise<Player> {
+  async updatePlayer(id: string, playerDto: UpdatePlayerDto): Promise<void> {
     this.logger.log(`Updating player with the id: ${id}`);
 
     const player = await this.playerModel.findById(id).exec();
@@ -69,9 +70,7 @@ export class PlayersService {
       throw new NotFoundException(`Player with the id ${id} not found`);
     }
 
-    return await this.playerModel
-      .findByIdAndUpdate(id, { $set: playerDto })
-      .exec();
+    await this.playerModel.findByIdAndUpdate(id, { $set: playerDto }).exec();
   }
 
   async deletePlayer(id: string): Promise<void> {
