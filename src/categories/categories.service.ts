@@ -1,4 +1,9 @@
-import { BadRequestException, Injectable, Logger } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { Category } from './interface/category.interface';
@@ -30,19 +35,58 @@ export class CategoriesService {
     await new this.categorieModule(createCategoryDto).save();
   }
 
-  // findAll() {
-  //   return `This action returns all categories`;
-  // }
+  async findAll(category?: string): Promise<Category[]> {
+    if (category) {
+      this.logger.log(`Getting category ${category}`);
+      const categoryOnDb = await this.categorieModule.find({ category }).exec();
 
-  // findOne(id: number) {
-  //   return `This action returns a #${id} category`;
-  // }
+      if (!categoryOnDb.length) {
+        throw new NotFoundException(`Category ${category} not found`);
+      }
 
-  // update(id: number, updateCategoryDto: UpdateCategoryDto) {
-  //   return `This action updates a #${id} category`;
-  // }
+      return categoryOnDb;
+    }
 
-  // remove(id: number) {
-  //   return `This action removes a #${id} category`;
-  // }
+    this.logger.log('Getting categories');
+    return await this.categorieModule.find().exec();
+  }
+
+  async findOne(id: string): Promise<Category> {
+    this.logger.log(`Getting players with the id ${id}`);
+    const category = await this.categorieModule.findById(id).exec();
+
+    if (!category) {
+      throw new NotFoundException(`Category with the id ${id} not found`);
+    }
+
+    return category;
+  }
+
+  async update(
+    id: string,
+    updateCategoryDto: UpdateCategoryDto,
+  ): Promise<void> {
+    this.logger.log(`Updating player with the id: ${id}`);
+
+    const category = await this.categorieModule.findById(id).exec();
+
+    if (!category) {
+      throw new NotFoundException(`Category with the id ${id} not found`);
+    }
+
+    await this.categorieModule
+      .findByIdAndUpdate(id, { $set: updateCategoryDto })
+      .exec();
+  }
+
+  async remove(id: string): Promise<void> {
+    this.logger.log(`Deleting category with the ID: ${id}`);
+    const player = await this.categorieModule.findById(id).exec();
+
+    if (!player) {
+      throw new NotFoundException(`Category with the id ${id} not found`);
+    }
+
+    await this.categorieModule.findByIdAndDelete(id).exec();
+  }
 }
