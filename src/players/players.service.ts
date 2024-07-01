@@ -19,7 +19,7 @@ export class PlayersService {
     @InjectModel('Player') private readonly playerModel: Model<Player>,
   ) {}
 
-  async getPlayers(email?: string): Promise<Player[]> {
+  async findAll(email?: string): Promise<Player[]> {
     if (email) {
       this.logger.log(`Getting players with the email ${email}`);
       const player = await this.playerModel.find({ email }).exec();
@@ -35,7 +35,7 @@ export class PlayersService {
     return this.playerModel.find().exec();
   }
 
-  async getPlayerById(id: string): Promise<Player> {
+  async findOne(id: string): Promise<Player> {
     this.logger.log(`Getting players with the id ${id}`);
     const player = await this.playerModel.findById(id).exec();
 
@@ -46,7 +46,7 @@ export class PlayersService {
     return player;
   }
 
-  async createPlayer(playerDto: CreatePlayerDto): Promise<void> {
+  async create(playerDto: CreatePlayerDto): Promise<void> {
     this.logger.log(`Creating player: ${JSON.stringify(playerDto)}`);
 
     const { email } = playerDto;
@@ -61,7 +61,7 @@ export class PlayersService {
     await new this.playerModel(playerDto).save();
   }
 
-  async updatePlayer(id: string, playerDto: UpdatePlayerDto): Promise<void> {
+  async update(id: string, playerDto: UpdatePlayerDto): Promise<void> {
     this.logger.log(`Updating player with the id: ${id}`);
 
     const player = await this.playerModel.findById(id).exec();
@@ -73,7 +73,7 @@ export class PlayersService {
     await this.playerModel.findByIdAndUpdate(id, { $set: playerDto }).exec();
   }
 
-  async deletePlayer(id: string): Promise<void> {
+  async remove(id: string): Promise<void> {
     this.logger.log(`Deleting player with the ID: ${id}`);
     const player = await this.playerModel.findById(id).exec();
 

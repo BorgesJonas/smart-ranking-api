@@ -20,32 +20,32 @@ export class PlayersController {
   constructor(private readonly playersService: PlayersService) {}
 
   @Get()
-  async getPlayers(@Query('email') email?: string): Promise<Player[]> {
-    return await this.playersService.getPlayers(email);
+  async findAll(@Query('email') email?: string): Promise<Player[]> {
+    return await this.playersService.findAll(email);
   }
 
   @Get(':id')
-  async getPlayerById(@Param('id') id: string): Promise<Player> {
-    return await this.playersService.getPlayerById(id);
+  async findOne(@Param('id') id: string): Promise<Player> {
+    return await this.playersService.findOne(id);
   }
 
   @Post()
   @UsePipes(ValidationPipe)
-  async createUpdatePlayer(@Body() playerDto: CreatePlayerDto): Promise<void> {
-    return await this.playersService.createPlayer(playerDto);
+  async create(@Body() playerDto: CreatePlayerDto): Promise<void> {
+    return await this.playersService.create(playerDto);
   }
 
   @Put(':id')
   @UsePipes(ValidationPipe)
-  async updatePlayer(
+  async update(
     @Param('id') id: string,
     @Body() playerDto: UpdatePlayerDto,
   ): Promise<void> {
-    return await this.playersService.updatePlayer(id, playerDto);
+    return await this.playersService.update(id, playerDto);
   }
 
   @Delete(':id')
-  async deletePlayer(@Param('id') id: string): Promise<void> {
-    await this.playersService.deletePlayer(id);
+  async remove(@Param('id') id: string): Promise<void> {
+    await this.playersService.remove(id);
   }
 }
