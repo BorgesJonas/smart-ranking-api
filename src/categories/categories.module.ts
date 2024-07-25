@@ -12,5 +12,6 @@ import { PlayersModule } from 'src/players/players.module';
     PlayersModule,
     MongooseModule.forFeature([{ name: 'Category', schema: CategorySchema }]),
   ],
+  exports: [CategoriesService],
 })
 export class CategoriesModule {}

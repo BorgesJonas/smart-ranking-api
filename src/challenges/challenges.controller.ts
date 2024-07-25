@@ -12,21 +12,22 @@ import {
 import { ChallengesService } from './challenges.service';
 import { CreateChallengeDto } from './dto/create-challenge.dto';
 import { UpdateChallengeDto } from './dto/update-challenge.dto';
+import { Challenge } from './interfaces/challenge.entity';
 
-@Controller('challenges')
+@Controller('api/v1/challenges')
 export class ChallengesController {
   constructor(private readonly challengesService: ChallengesService) {}
 
   @Post()
   @UsePipes(ValidationPipe)
-  create(@Body() createChallengeDto: CreateChallengeDto): Promise<void> {
+  create(@Body() createChallengeDto: CreateChallengeDto): Promise<Challenge> {
     return this.challengesService.create(createChallengeDto);
   }
 
-  // @Get()
-  // findAll() {
-  //   return this.challengesService.findAll();
-  // }
+  @Get()
+  findAll(): Promise<Challenge[]> {
+    return this.challengesService.findAll();
+  }
 
   // @Get(':id')
   // findOne(@Param('id') id: string) {

@@ -123,4 +123,20 @@ export class CategoriesService {
       .findByIdAndUpdate(idCategory, { $set: category })
       .exec();
   }
+
+  async findPlayerCategory(id: string): Promise<Category> {
+    const players = await this.playersService.findAll();
+
+    const filteredPlayer = players.filter(
+      (player) => player._id.toString() === id,
+    );
+
+    if (!filteredPlayer.length) {
+      throw new BadRequestException(`User not with the id: ${id} not found`);
+    }
+
+    return await this.categorieModule
+      .findOne({ players: { $in: [id] } })
+      .exec();
+  }
 }
