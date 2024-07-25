@@ -1,11 +1,12 @@
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { CreateChallengeDto } from './dto/create-challenge.dto';
 import { InjectModel } from '@nestjs/mongoose';
-import mongoose, { Model } from 'mongoose';
+import { Model } from 'mongoose';
 import { Challenge, Match } from './interfaces/challenge.entity';
 import { PlayersService } from 'src/players/players.service';
 import { CategoriesService } from 'src/categories/categories.service';
 import { ChallengeStatus } from './interfaces/challenge-status.enum';
+import { UpdateChallengeDto } from './dto/update-challenge.dto';
 
 @Injectable()
 export class ChallengesService {
@@ -74,13 +75,46 @@ export class ChallengesService {
       .exec();
   }
 
-  // findOne(id: number) {
-  //   return `This action returns a #${id} challenge`;
-  // }
+  findOne(id: string): Promise<Challenge> {
+    return this.challengeModel.findById(id);
+  }
 
-  // update(id: number, updateChallengeDto: UpdateChallengeDto) {
-  //   return `This action updates a #${id} challenge`;
-  // }
+  findAllByPlayer(playerId: string): Promise<Challenge[]> {
+    const player = this.playersService.findOne(playerId);
+
+    if (!player) {
+      throw new BadRequestException(`Player with the id ${playerId} not found`);
+    }
+
+    return this.challengeModel
+      .find({ players: { $in: [playerId] } })
+      .populate('requester')
+      .populate('players')
+      .populate('match')
+      .exec();
+  }
+
+  async update(
+    id: string,
+    updateChallengeDto: UpdateChallengeDto,
+  ): Promise<Challenge> {
+    const challenge = await this.challengeModel.findById(id);
+
+    if (!challenge) {
+      throw new BadRequestException(`Challenge with the id ${id} not found`);
+    }
+
+    if (updateChallengeDto.status) {
+      challenge.dateResponse = new Date();
+    }
+
+    challenge.status = updateChallengeDto.status;
+    challenge.challengeDate = updateChallengeDto.challengeDate;
+
+    await this.challengeModel.findByIdAndUpdate(id, { $set: challenge }).exec();
+
+    return challenge;
+  }
 
   // remove(id: number) {
   //   return `This action removes a #${id} challenge`;

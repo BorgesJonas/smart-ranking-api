@@ -13,6 +13,7 @@ import { ChallengesService } from './challenges.service';
 import { CreateChallengeDto } from './dto/create-challenge.dto';
 import { UpdateChallengeDto } from './dto/update-challenge.dto';
 import { Challenge } from './interfaces/challenge.entity';
+import { ChallengeStatusValidationPipe } from './pipes/challenge-status-validation.pipe';
 
 @Controller('api/v1/challenges')
 export class ChallengesController {
@@ -29,18 +30,23 @@ export class ChallengesController {
     return this.challengesService.findAll();
   }
 
-  // @Get(':id')
-  // findOne(@Param('id') id: string) {
-  //   return this.challengesService.findOne(+id);
-  // }
+  @Get(':id')
+  findOne(@Param('id') id: string): Promise<Challenge> {
+    return this.challengesService.findOne(id);
+  }
 
-  // @Patch(':id')
-  // update(
-  //   @Param('id') id: string,
-  //   @Body() updateChallengeDto: UpdateChallengeDto,
-  // ) {
-  //   return this.challengesService.update(+id, updateChallengeDto);
-  // }
+  @Get('/player/:id')
+  findAllByPlayer(@Param('id') id: string): Promise<Challenge[]> {
+    return this.challengesService.findAllByPlayer(id);
+  }
+
+  @Patch(':id')
+  update(
+    @Param('id') id: string,
+    @Body(ChallengeStatusValidationPipe) updateChallengeDto: UpdateChallengeDto,
+  ): Promise<Challenge> {
+    return this.challengesService.update(id, updateChallengeDto);
+  }
 
   // @Delete(':id')
   // remove(@Param('id') id: string) {

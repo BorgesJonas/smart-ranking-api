@@ -4,7 +4,6 @@ import { ConfigModule } from '@nestjs/config';
 import { PlayersModule } from './players/players.module';
 import { CategoriesModule } from './categories/categories.module';
 import { ChallengesModule } from './challenges/challenges.module';
-import { RankingsModule } from './rankings/rankings.module';
 
 @Module({
   imports: [
@@ -13,7 +12,6 @@ import { RankingsModule } from './rankings/rankings.module';
     PlayersModule,
     CategoriesModule,
     ChallengesModule,
-    RankingsModule,
   ],
   controllers: [],
   providers: [],

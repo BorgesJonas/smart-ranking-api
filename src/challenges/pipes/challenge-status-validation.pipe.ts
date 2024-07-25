@@ -1,5 +1,6 @@
 import { BadRequestException, PipeTransform } from '@nestjs/common';
 import { ChallengeStatus } from '../interfaces/challenge-status.enum';
+import { UpdateChallengeDto } from '../dto/update-challenge.dto';
 
 export class ChallengeStatusValidationPipe implements PipeTransform {
   readonly allowedStatus = [
@@ -8,7 +9,7 @@ export class ChallengeStatusValidationPipe implements PipeTransform {
     ChallengeStatus.CANCELED,
   ];
 
-  transform(value: any): unknown {
+  transform(value: UpdateChallengeDto): unknown {
     const status = value.status.toUpperCase();
 
     if (!this.isStatusValid(status)) {
