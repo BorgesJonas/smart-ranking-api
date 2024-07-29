@@ -14,6 +14,7 @@ import { CreateChallengeDto } from './dto/create-challenge.dto';
 import { UpdateChallengeDto } from './dto/update-challenge.dto';
 import { Challenge } from './interfaces/challenge.entity';
 import { ChallengeStatusValidationPipe } from './pipes/challenge-status-validation.pipe';
+import { CreateMatchDto } from './dto/create-match.dto';
 
 @Controller('api/v1/challenges')
 export class ChallengesController {
@@ -48,8 +49,16 @@ export class ChallengesController {
     return this.challengesService.update(id, updateChallengeDto);
   }
 
-  // @Delete(':id')
-  // remove(@Param('id') id: string) {
-  //   return this.challengesService.remove(+id);
-  // }
+  @Post('/:id/match')
+  createMatch(
+    @Param('id') id: string,
+    @Body(ValidationPipe) createMatchDto: CreateMatchDto,
+  ): Promise<void> {
+    return this.challengesService.createMatch(id, createMatchDto);
+  }
+
+  @Delete(':id')
+  remove(@Param('id') id: string): Promise<void> {
+    return this.challengesService.remove(id);
+  }
 }
